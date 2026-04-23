@@ -1,13 +1,13 @@
 server:
   port: 8081
-
+ 
 spring:
   datasource:
-    url: ${jdbc:postgresql://postgressql:MvSnbUZUmygIc33jHA1kOGWjyD3OrlCA@dpg-d7kpodpkh4rs73fbr7b0-a.virginia-postgres.render.com/aula_310b?sslmode=require}
-    username: ${postgres}
-    password: ${MvSnbUZUmygIc33jHA1kOGWjyD3OrlCA}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
-
+ 
   sql:
     init:
       mode: always
