@@ -3,15 +3,10 @@ server:
 
 spring:
   datasource:
-    platform: postgres
-    url: jdbc:postgresql://127.0.0.1:5432/aula
-    username: postgres
-    password: 123
-    driverClassName: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
+    url: ${jdbc:postgresql://postgressql:MvSnbUZUmygIc33jHA1kOGWjyD3OrlCA@dpg-d7kpodpkh4rs73fbr7b0-a.virginia-postgres.render.com/aula_310b?sslmode=require}
+    username: ${postgres}
+    password: ${MvSnbUZUmygIc33jHA1kOGWjyD3OrlCA}
+    driver-class-name: org.postgresql.Driver
 
   sql:
     init:
