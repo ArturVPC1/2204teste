@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGA — Buscar Alunos · FatecRL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root { --ink: #0e0e0e; --paper: #f5f0e8; --cream: #ede8dc; --gold: #b8860b; --muted: #6b6456; --line: rgba(14,14,14,0.12); }
+        body { font-family: 'Cormorant Garamond', Georgia, serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+        nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 3rem; border-bottom: 1px solid var(--line); background: rgba(245,240,232,0.95); backdrop-filter: blur(8px); }
+        .nav-logo { font-family: 'DM Mono', monospace; font-size: 0.85rem; letter-spacing: 0.25em; text-decoration: none; color: var(--ink); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+        .nav-cta { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 0.55rem 1.3rem; text-decoration: none; transition: background 0.2s; }
+        .nav-cta:hover { background: var(--gold); }
+
+        .page-header { padding: 3.5rem 3rem 2.5rem; border-bottom: 1px solid var(--line); animation: fadeUp 0.6s ease both; }
+        .page-tag { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.6rem; }
+        .page-title { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 300; }
+        .page-title em { font-style: italic; color: var(--gold); }
+
+        /* SEARCH PANEL */
+        .search-panel {
+            background: var(--cream); border-bottom: 1px solid var(--line);
+            padding: 2.5rem 3rem; animation: fadeUp 0.6s ease 0.1s both;
+        }
+        .search-panel-title { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; display: block; }
+
+        /* TYPE SELECTOR */
+        .type-selector { display: flex; gap: 0; margin-bottom: 1.5rem; border: 1px solid var(--line); width: fit-content; }
+        .type-btn { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.6rem 1.3rem; border: none; background: transparent; color: var(--muted); cursor: pointer; border-right: 1px solid var(--line); transition: background 0.2s, color 0.2s; }
+        .type-btn:last-child { border-right: none; }
+        .type-btn.active { background: var(--ink); color: var(--paper); }
+        .type-btn:hover:not(.active) { background: var(--paper); color: var(--ink); }
+
+        /* SEARCH FORM */
+        .search-form { display: flex; gap: 0; align-items: stretch; max-width: 600px; }
+        .search-input {
+            flex: 1; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.1rem;
+            background: var(--paper); border: 1px solid var(--line); border-right: none;
+            padding: 0.8rem 1.2rem; color: var(--ink); outline: none; transition: border-color 0.2s;
+        }
+        .search-input:focus { border-color: var(--ink); }
+        .search-input::placeholder { color: rgba(107,100,86,0.4); }
+        .search-submit { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 0 2rem; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+        .search-submit:hover { background: var(--gold); }
+
+        .search-hint { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em; color: var(--muted); margin-top: 0.7rem; display: block; }
+
+        /* RESULTS */
+        .results-section { padding: 2rem 3rem 3rem; animation: fadeUp 0.6s ease 0.2s both; }
+        .results-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+        .results-title { font-size: 1.4rem; font-weight: 300; }
+        .results-title em { font-style: italic; color: var(--gold); }
+        .results-count { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--muted); }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead tr { border-bottom: 2px solid var(--ink); }
+        thead th { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0.8rem 1rem; font-weight: 400; }
+        tbody tr { border-bottom: 1px solid var(--line); transition: background 0.15s; }
+        tbody tr:hover { background: var(--cream); }
+        tbody td { padding: 0.9rem 1rem; font-size: 1rem; font-weight: 300; }
+        td.td-id { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--muted); max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        td.td-nome { font-weight: 400; }
+        td.td-cpf { font-family: 'DM Mono', monospace; font-size: 0.8rem; }
+        td.td-num { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); width: 40px; }
+
+        /* HIGHLIGHT */
+        mark { background: rgba(184,134,11,0.2); color: var(--ink); padding: 0 2px; }
+
+        /* EMPTY */
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--muted); }
+        .empty-state .empty-icon { font-size: 2rem; display: block; margin-bottom: 1rem; opacity: 0.4; }
+        .empty-state p { font-size: 1rem; font-weight: 300; }
+
+        .back-link { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem; }
+        .back-link:hover { color: var(--ink); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { nav { padding: 1rem 1.5rem; } .nav-links { display: none; } .page-header, .search-panel, .results-section { padding: 2rem 1.5rem; } .type-selector { flex-wrap: wrap; } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/landing" class="nav-logo">FatecRL · SIGA</a>
+    <ul class="nav-links">
+        <li><a href="/landing">Início</a></li><li><a href="/alunos">Alunos</a></li>
+        <li><a href="/buscar" class="active">Buscar</a></li>
+        <li><a href="/contato">Contato</a></li>
+    </ul>
+    <a href="/aluno" class="nav-cta">+ Novo Aluno</a>
+</nav>
+
+<!-- HEADER -->
+<header class="page-header">
+    <span class="page-tag">Consultas · SELECT</span>
+    <h1 class="page-title">Buscar <em>alunos</em></h1>
+</header>
+
+<!-- SEARCH PANEL -->
+<div class="search-panel">
+    <span class="search-panel-title">Escolha o tipo de busca e informe o termo:</span>
+
+    <!-- Seletor de tipo -->
+    <div class="type-selector">
+        <button class="type-btn active" id="btn-nome" onclick="setTipo('nome')">Por Nome</button>
+        <button class="type-btn" id="btn-cpf" onclick="setTipo('cpf')">Por CPF</button>
+        <button class="type-btn" id="btn-id" onclick="setTipo('id')">Por ID</button>
+        <button class="type-btn" id="btn-todos" onclick="setTipo('todos')">Listar Todos</button>
+    </div>
+
+    <!-- Formulário dinâmico -->
+    <form action="/buscar" method="get" id="searchForm">
+        <div class="search-form" id="inputWrap">
+            <input class="search-input" type="text" id="searchInput" name="nome"
+                   placeholder="Digite o nome do aluno…">
+            <button class="search-submit" type="submit">Buscar</button>
+        </div>
+        <span class="search-hint" id="searchHint">Busca parcial — encontra qualquer parte do nome.</span>
+    </form>
+</div>
+
+<!-- RESULTS -->
+<div class="results-section" th:if="${resultados != null}">
+
+    <div class="results-header">
+        <div>
+            <h2 class="results-title"
+                th:text="${tipoBusca == 'todos'} ? 'Todos os alunos' :
+                          'Resultados para: ' + termoBusca">
+                Resultados
+            </h2>
+        </div>
+        <span class="results-count"
+              th:text="${#lists.size(resultados)} + ' registro(s) encontrado(s)'">
+            0 registros
+        </span>
+    </div>
+
+    <!-- Nenhum resultado -->
+    <div th:if="${#lists.isEmpty(resultados)}" class="empty-state">
+        <span class="empty-icon">🔍</span>
+        <p th:text="'Nada encontrado para: ' + ${termoBusca}">Nenhum resultado.</p>
+    </div>
+
+    <!-- Tabela de resultados -->
+    <table th:if="${not #lists.isEmpty(resultados)}">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>ID (UUID)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="aluno, status : ${resultados}">
+                <td class="td-num" th:text="${status.count}">1</td>
+                <td class="td-nome" th:text="${aluno.nome}">Nome</td>
+                <td class="td-cpf" th:text="${aluno.cpf}">CPF</td>
+                <td class="td-id" th:text="${aluno.id}" th:title="${aluno.id}">UUID</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top:1.5rem">
+        <a href="/alunos" class="back-link">← Voltar para lista completa</a>
+    </div>
+</div>
+
+<script>
+    // Configurações de cada tipo de busca
+    const tipos = {
+        nome:  { param: 'nome',  placeholder: 'Digite o nome do aluno…',       hint: 'Busca parcial — encontra qualquer parte do nome.' },
+        cpf:   { param: 'cpf',   placeholder: 'Digite o CPF (só números ok)…', hint: 'Pode digitar com ou sem pontuação.' },
+        id:    { param: 'id',    placeholder: 'Cole o UUID do aluno…',          hint: 'Busca parcial pelo ID único.' },
+        todos: { param: null,    placeholder: '',                                hint: 'Lista todos os alunos ordenados por nome.' }
+    };
+
+    // Marca o botão ativo vindo do servidor
+    const tipoServidor = /*[[${tipoBusca}]]*/ 'nome';
+    if (tipoServidor) document.getElementById('btn-' + tipoServidor)?.classList.add('active');
+
+    function setTipo(tipo) {
+        // Atualiza botões
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + tipo).classList.add('active');
+
+        const cfg = tipos[tipo];
+        const form = document.getElementById('searchForm');
+        const wrap = document.getElementById('inputWrap');
+        const input = document.getElementById('searchInput');
+        const hint = document.getElementById('searchHint');
+
+        // Limpa campos antigos e cria o novo
+        input.name = cfg.param || '';
+        input.placeholder = cfg.placeholder;
+        hint.textContent = cfg.hint;
+
+        if (tipo === 'todos') {
+            wrap.style.display = 'none';
+            // Submete imediatamente sem parâmetro
+            form.submit();
+        } else {
+            wrap.style.display = 'flex';
+            input.focus();
+        }
+    }
+</script>
+
+</body>
+</html>

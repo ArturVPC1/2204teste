@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGA — Cadastrar Aluno · FatecRL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root { --ink: #0e0e0e; --paper: #f5f0e8; --cream: #ede8dc; --gold: #b8860b; --muted: #6b6456; --line: rgba(14,14,14,0.12); --red: #8b1a1a; }
+        body { font-family: 'Cormorant Garamond', Georgia, serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+        nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 3rem; border-bottom: 1px solid var(--line); background: rgba(245,240,232,0.95); backdrop-filter: blur(8px); }
+        .nav-logo { font-family: 'DM Mono', monospace; font-size: 0.85rem; letter-spacing: 0.25em; text-decoration: none; color: var(--ink); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--ink); }
+        .nav-back { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+        .nav-back:hover { color: var(--ink); }
+
+        .page-layout { display: grid; grid-template-columns: 1fr 1.2fr; min-height: calc(100vh - 57px); }
+
+        /* LEFT — info */
+        .form-info { padding: 4rem; background: var(--cream); border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; gap: 3rem; animation: fadeUp 0.6s ease both; }
+        .info-tag { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+        .info-title { font-size: clamp(2rem, 3.5vw, 3.2rem); font-weight: 300; line-height: 1.1; margin-top: 0.6rem; }
+        .info-title em { font-style: italic; color: var(--gold); }
+        .info-desc { font-size: 1rem; font-weight: 300; line-height: 1.8; color: var(--muted); }
+        .info-steps { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+        .info-step { display: flex; align-items: flex-start; gap: 1rem; }
+        .step-dot { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: 'DM Mono', monospace; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+        .step-text { font-size: 0.95rem; font-weight: 300; line-height: 1.6; color: var(--muted); }
+        .step-text strong { color: var(--ink); font-weight: 400; }
+
+        /* RIGHT — form */
+        .form-area { padding: 4rem; display: flex; flex-direction: column; justify-content: center; animation: fadeUp 0.6s ease 0.1s both; }
+        .form-heading { font-size: 1.6rem; font-weight: 300; margin-bottom: 0.4rem; }
+        .form-heading em { font-style: italic; color: var(--gold); }
+        .form-subtext { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 2.5rem; }
+
+        .field-group { border: 1px solid var(--line); margin-bottom: -1px; padding: 1.4rem 1.8rem; transition: background 0.2s; position: relative; }
+        .field-group:focus-within { background: var(--cream); z-index: 1; border-color: var(--ink); }
+        .field-group.error { border-color: var(--red); }
+        .field-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.4rem; transition: color 0.2s; }
+        .field-group:focus-within .field-label { color: var(--gold); }
+        .field-input { width: 100%; background: transparent; border: none; outline: none; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.2rem; font-weight: 300; color: var(--ink); }
+        .field-input::placeholder { color: rgba(107,100,86,0.35); }
+        .field-error { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--red); display: none; margin-top: 0.3rem; }
+        .field-group.error .field-error { display: block; }
+
+        .form-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 1.8rem; }
+        .btn-submit { font-family: 'DM Mono', monospace; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 1rem 2.5rem; cursor: pointer; transition: background 0.25s, transform 0.2s; }
+        .btn-submit:hover { background: var(--gold); transform: translateY(-2px); }
+        .btn-cancel { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .btn-cancel:hover { color: var(--ink); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { nav { padding: 1rem 1.5rem; } .nav-links { display: none; } .page-layout { grid-template-columns: 1fr; } .form-info { padding: 2.5rem 1.5rem; } .form-area { padding: 2.5rem 1.5rem; } }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/landing" class="nav-logo">FatecRL · SIGA</a>
+    <ul class="nav-links">
+        <li><a href="/landing">Início</a></li><li><a href="/alunos">Alunos</a></li>
+        <li><a href="/buscar">Buscar</a></li>
+        <li><a href="/contato">Contato</a></li>
+    </ul>
+    <a href="/alunos" class="nav-back">← Voltar</a>
+</nav>
+
+<div class="page-layout">
+    <!-- LEFT -->
+    <div class="form-info">
+        <div>
+            <span class="info-tag">Cadastro · INSERT</span>
+            <h1 class="info-title">Novo <em>aluno</em></h1>
+        </div>
+        <p class="info-desc">Preencha os dados do novo aluno da FatecRL. O ID de matrícula será gerado automaticamente pelo sistema.</p>
+        <ul class="info-steps">
+            <li class="info-step">
+                <span class="step-dot">1</span>
+                <span class="step-text"><strong>Nome completo</strong> — mínimo 3 caracteres.</span>
+            </li>
+            <li class="info-step">
+                <span class="step-dot">2</span>
+                <span class="step-text"><strong>CPF</strong> — 11 dígitos numéricos, sem pontuação.</span>
+            </li>
+            <li class="info-step">
+                <span class="step-dot">3</span>
+                <span class="step-text">Clica em <strong>Cadastrar</strong> e pronto — o banco gera um <strong>UUID</strong> único na hora.</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="form-area">
+        <h2 class="form-heading">Preencha os <em>dados</em></h2>
+        <span class="form-subtext">* Todos os campos são obrigatórios</span>
+
+        <form action="#" th:action="@{/aluno}" method="post" th:object="${aluno}" id="alunoForm" novalidate>
+            <div class="field-group" id="grp-nome">
+                <label class="field-label" for="nome">Nome completo *</label>
+                <input class="field-input" id="nome" type="text" th:field="*{nome}"
+                       placeholder="Ex: Maria Aparecida Silva" autocomplete="off">
+                <span class="field-error" id="err-nome">Por favor, informe o nome completo.</span>
+            </div>
+            <div class="field-group" id="grp-cpf">
+                <label class="field-label" for="cpf">CPF *</label>
+                <input class="field-input" id="cpf" type="text" th:field="*{cpf}"
+                       placeholder="Ex: 12345678900" maxlength="11" autocomplete="off">
+                <span class="field-error" id="err-cpf">CPF deve ter exatamente 11 dígitos numéricos.</span>
+            </div>
+            <div class="form-actions">
+                <button class="btn-submit" type="submit">Cadastrar aluno</button>
+                <a href="/alunos" class="btn-cancel">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('alunoForm').addEventListener('submit', function(e) {
+        let valid = true;
+
+        const nome = document.getElementById('nome').value.trim();
+        const cpf  = document.getElementById('cpf').value.trim();
+
+        // Valida nome
+        if (nome.length < 3) {
+            document.getElementById('grp-nome').classList.add('error');
+            valid = false;
+        } else {
+            document.getElementById('grp-nome').classList.remove('error');
+        }
+
+        // Valida CPF: só dígitos, 11 chars
+        if (!/^\d{11}$/.test(cpf)) {
+            document.getElementById('grp-cpf').classList.add('error');
+            valid = false;
+        } else {
+            document.getElementById('grp-cpf').classList.remove('error');
+        }
+
+        if (!valid) e.preventDefault();
+    });
+
+    // Remove erro ao digitar
+    document.getElementById('nome').addEventListener('input', () => document.getElementById('grp-nome').classList.remove('error'));
+    document.getElementById('cpf').addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '').slice(0, 11);
+        document.getElementById('grp-cpf').classList.remove('error');
+    });
+</script>
+</body>
+</html>

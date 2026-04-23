@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGA — Contato · FatecRL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root { --ink: #0e0e0e; --paper: #f5f0e8; --cream: #ede8dc; --gold: #b8860b; --muted: #6b6456; --line: rgba(14,14,14,0.12); }
+        body { font-family: 'Cormorant Garamond', Georgia, serif; background: var(--paper); color: var(--ink); overflow-x: hidden; }
+        body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.3; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); }
+
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.4rem 4rem; border-bottom: 1px solid var(--line); background: rgba(245,240,232,0.92); backdrop-filter: blur(8px); }
+        .nav-logo { font-family: 'DM Mono', monospace; font-size: 0.85rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink); text-decoration: none; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+        .nav-cta { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 0.6rem 1.4rem; text-decoration: none; transition: background 0.2s; }
+        .nav-cta:hover { background: var(--gold); }
+
+        /* HERO BANNER */
+        .page-banner { position: relative; height: 340px; overflow: hidden; margin-top: 0; }
+        .banner-img { width: 100%; height: 100%; object-fit: cover; filter: sepia(20%) brightness(0.7); }
+        .banner-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(14,14,14,0.3) 0%, rgba(14,14,14,0.6) 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem 5rem; padding-top: 8rem; }
+        .banner-tag { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(245,240,232,0.7); display: block; margin-bottom: 0.6rem; animation: fadeUp 0.7s ease both; }
+        .banner-title { font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 300; color: var(--paper); line-height: 1.05; animation: fadeUp 0.7s ease 0.1s both; }
+        .banner-title em { font-style: italic; color: rgba(212,160,23,0.9); }
+
+        /* MAIN LAYOUT */
+        .contact-layout { display: grid; grid-template-columns: 1fr 1.4fr; min-height: 70vh; }
+
+        /* SIDEBAR */
+        .contact-info { padding: 5rem 4rem; border-right: 1px solid var(--line); background: var(--cream); display: flex; flex-direction: column; gap: 3.5rem; }
+        .info-block { opacity: 0; transform: translateX(-16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .info-block.visible { opacity: 1; transform: translateX(0); }
+        .info-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.8rem; }
+        .info-title { font-size: 1.4rem; font-weight: 300; margin-bottom: 0.5rem; }
+        .info-text { font-size: 0.95rem; font-weight: 300; line-height: 1.7; color: var(--muted); }
+        .info-link { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); padding-bottom: 0.1rem; transition: border-color 0.2s, color 0.2s; }
+        .info-link:hover { border-color: var(--gold); color: var(--gold); }
+        .hours-list { list-style: none; margin-top: 0.5rem; }
+        .hours-list li { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 300; color: var(--muted); padding: 0.4rem 0; border-bottom: 1px solid var(--line); }
+        .hours-list li:last-child { border-bottom: none; }
+        .hours-list .day { color: var(--ink); }
+
+        /* FORM */
+        .contact-form-wrap { padding: 5rem; display: flex; flex-direction: column; }
+        .form-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 3rem; opacity: 0; transform: translateY(16px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .form-top.visible { opacity: 1; transform: translateY(0); }
+        .form-heading { font-size: 2rem; font-weight: 300; }
+        .form-heading em { font-style: italic; color: var(--gold); }
+        .form-required { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--muted); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; }
+        .field-group { border: 1px solid var(--line); margin: -1px 0 0 -1px; padding: 1.5rem 2rem; transition: background 0.2s, opacity 0.5s ease, transform 0.5s ease; opacity: 0; transform: translateY(12px); }
+        .field-group.visible { opacity: 1; transform: translateY(0); }
+        .field-group:focus-within { background: var(--cream); z-index: 1; }
+        .field-group.full { grid-column: 1 / -1; }
+        .field-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.5rem; transition: color 0.2s; }
+        .field-group:focus-within .field-label { color: var(--gold); }
+        .field-input, .field-select, .field-textarea { width: 100%; background: transparent; border: none; outline: none; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.1rem; font-weight: 300; color: var(--ink); resize: none; appearance: none; }
+        .field-textarea { height: 120px; line-height: 1.6; }
+        .field-input::placeholder, .field-textarea::placeholder { color: rgba(107,100,86,0.4); }
+        .field-select { cursor: pointer; }
+        .field-select option { background: var(--paper); }
+        .field-check { grid-column: 1 / -1; border: 1px solid var(--line); margin: -1px 0 0 -1px; padding: 1.5rem 2rem; display: flex; align-items: center; gap: 1rem; opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .field-check.visible { opacity: 1; transform: translateY(0); }
+        .field-check input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--ink); cursor: pointer; flex-shrink: 0; }
+        .field-check label { font-size: 0.9rem; font-weight: 300; color: var(--muted); cursor: pointer; }
+        .form-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 2rem; opacity: 0; transform: translateY(12px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .form-footer.visible { opacity: 1; transform: translateY(0); }
+        .btn-submit { font-family: 'DM Mono', monospace; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 1.1rem 2.8rem; cursor: pointer; transition: background 0.25s, transform 0.2s; }
+        .btn-submit:hover { background: var(--gold); transform: translateY(-2px); }
+        .form-note { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted); }
+        .success-overlay { display: none; text-align: center; padding: 4rem 2rem; animation: fadeUp 0.5s ease both; }
+        .success-overlay.show { display: block; }
+        .success-icon { font-size: 3rem; display: block; margin-bottom: 1.5rem; }
+        .success-title { font-size: 2rem; font-weight: 300; margin-bottom: 1rem; }
+        .success-title em { font-style: italic; color: var(--gold); }
+        .success-text { font-size: 1rem; font-weight: 300; color: var(--muted); line-height: 1.7; }
+
+        /* LOCATION BAND */
+        .location-band { border-top: 1px solid var(--line); background: var(--ink); color: var(--paper); padding: 3rem 5rem; display: flex; align-items: center; justify-content: space-between; gap: 3rem; }
+        .location-band h3 { font-size: 1.8rem; font-weight: 300; }
+        .location-band h3 em { font-style: italic; color: var(--gold); }
+        .location-items { display: flex; gap: 4rem; }
+        .location-item .loc-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(245,240,232,0.4); display: block; margin-bottom: 0.3rem; }
+        .location-item .loc-val { font-size: 1rem; font-weight: 300; }
+
+        footer { border-top: 1px solid rgba(245,240,232,0.1); padding: 2rem 5rem; display: flex; align-items: center; justify-content: space-between; background: var(--ink); }
+        .footer-logo { font-family: 'DM Mono', monospace; font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--paper); }
+        .footer-text { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: rgba(245,240,232,0.4); }
+        .footer-links { display: flex; gap: 2rem; list-style: none; }
+        .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,240,232,0.5); text-decoration: none; }
+        .footer-links a:hover { color: var(--paper); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 900px) {
+            nav { padding: 1.2rem 2rem; } .nav-links { display: none; }
+            .banner-overlay { padding: 2rem; padding-top: 7rem; }
+            .contact-layout { grid-template-columns: 1fr; }
+            .contact-info { padding: 3rem 2rem; border-right: none; border-bottom: 1px solid var(--line); }
+            .contact-form-wrap { padding: 3rem 2rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .location-band { flex-direction: column; padding: 3rem 2rem; }
+            .location-items { flex-direction: column; gap: 1.5rem; }
+            footer { flex-direction: column; gap: 1rem; padding: 2rem; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/landing" class="nav-logo">FatecRL · SIGA</a>
+    <ul class="nav-links">
+        <li><a href="/landing">Início</a></li>
+        <li><a href="/alunos">Alunos</a></li>
+        <li><a href="/aluno">Cadastro</a></li>
+        <li><a href="/contato" class="active">Contato</a></li>
+    </ul>
+    <a href="/aluno" class="nav-cta">Novo Cadastro</a>
+</nav>
+
+<!-- BANNER -->
+<div class="page-banner">
+    <img class="banner-img"
+         src="https://images.unsplash.com/photo-1562774053-701939374585?w=1400&q=80&auto=format&fit=crop"
+         alt="Campus FatecRL">
+    <div class="banner-overlay">
+        <span class="banner-tag">Fale conosco · Secretaria Acadêmica</span>
+        <h1 class="banner-title">Entre em <em>contato.</em></h1>
+    </div>
+</div>
+
+<!-- MAIN -->
+<main class="contact-layout">
+    <aside class="contact-info">
+        <div class="info-block">
+            <span class="info-label">Secretaria Acadêmica</span>
+            <h3 class="info-title">Suporte ao aluno</h3>
+            <p class="info-text">Nossa equipe da secretaria está disponível para auxiliar com matrículas, documentações, históricos e dúvidas sobre o SIGA.</p>
+            <br>
+            <a href="mailto:secretaria@fms.edu.br" class="info-link">secretaria@fms.edu.br</a>
+        </div>
+        <div class="info-block">
+            <span class="info-label">TI & Sistemas</span>
+            <h3 class="info-title">Suporte técnico SIGA</h3>
+            <p class="info-text">Problemas com o sistema, acesso ou configuração? Nossa equipe de TI atende pelo e-mail abaixo.</p>
+            <br>
+            <a href="mailto:ti@fms.edu.br" class="info-link">ti@fms.edu.br</a>
+        </div>
+        <div class="info-block">
+            <span class="info-label">Localização</span>
+            <h3 class="info-title">Campus Central</h3>
+            <p class="info-text">Senador Feijó, 650<br>Santos, SP</p>
+        </div>
+        <div class="info-block">
+            <span class="info-label">Horário de Atendimento</span>
+            <ul class="hours-list">
+                <li><span class="day">Segunda — Sexta</span><span>07:30 – 20:00</span></li>
+                <li><span class="day">Sábado</span><span>08:00 – 13:00</span></li>
+                <li><span class="day">Domingo</span><span>Fechado</span></li>
+            </ul>
+        </div>
+        <div class="info-block">
+            <span class="info-label">Telefone</span>
+            <h3 class="info-title">(13) 3200-4000</h3>
+            <p class="info-text">Ramal 201 — Secretaria<br>Ramal 315 — TI & Sistemas</p>
+        </div>
+    </aside>
+
+    <div class="contact-form-wrap">
+        <div id="formArea">
+            <div class="form-top">
+                <h2 class="form-heading">Envie sua <em>mensagem</em></h2>
+                <span class="form-required">* Obrigatórios</span>
+            </div>
+            <div class="form-grid">
+                <div class="field-group">
+                    <label class="field-label" for="nome">Nome completo *</label>
+                    <input class="field-input" id="nome" type="text" placeholder="Ex: João da Silva" required>
+                </div>
+                <div class="field-group">
+                    <label class="field-label" for="email">E-mail *</label>
+                    <input class="field-input" id="email" type="email" placeholder="joao@email.com" required>
+                </div>
+                <div class="field-group">
+                    <label class="field-label" for="telefone">Telefone</label>
+                    <input class="field-input" id="telefone" type="tel" placeholder="(13) 99999-0000">
+                </div>
+                <div class="field-group">
+                    <label class="field-label" for="assunto">Assunto *</label>
+                    <select class="field-select" id="assunto" required>
+                        <option value="" disabled selected>Selecione…</option>
+                        <option value="matricula">Matrícula / Rematrícula</option>
+                        <option value="historico">Histórico escolar</option>
+                        <option value="siga">Dúvida sobre o SIGA</option>
+                        <option value="ti">Suporte técnico TI</option>
+                        <option value="financeiro">Financeiro / Bolsas</option>
+                        <option value="outro">Outro assunto</option>
+                    </select>
+                </div>
+                <div class="field-group full">
+                    <label class="field-label" for="mensagem">Mensagem *</label>
+                    <textarea class="field-textarea" id="mensagem" placeholder="Descreva sua dúvida ou solicitação com detalhes…" required></textarea>
+                </div>
+                <div class="field-check">
+                    <input type="checkbox" id="aceite" required>
+                    <label for="aceite">Concordo que meus dados sejam usados para responder esta mensagem, conforme a Política de Privacidade da FatecRL.</label>
+                </div>
+            </div>
+            <div class="form-footer" id="formFooter">
+                <button class="btn-submit" onclick="handleSubmit()">Enviar mensagem</button>
+                <span class="form-note">Retorno em até 1 dia útil</span>
+            </div>
+        </div>
+        <div class="success-overlay" id="successMsg">
+            <span class="success-icon">✦</span>
+            <h2 class="success-title">Mensagem <em>recebida!</em></h2>
+            <p class="success-text">Obrigado pelo contato.<br>Nossa equipe retornará em até 1 dia útil no e-mail informado.</p>
+        </div>
+    </div>
+</main>
+
+<!-- LOCATION BAND -->
+<div class="location-band">
+    <h3>Venha nos <em>visitar.</em></h3>
+    <div class="location-items">
+        <div class="location-item">
+            <span class="loc-label">Endereço</span>
+            <span class="loc-val">Senador Feijó, 650</span>
+        </div>
+        <div class="location-item">
+            <span class="loc-label">Cidade</span>
+            <span class="loc-val">Santos, São Paulo</span>
+        </div>
+        <div class="location-item">
+            <span class="loc-label">Telefone</span>
+            <span class="loc-val">(13) 3200-4000</span>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <span class="footer-logo">FatecRL · SIGA</span>
+    <span class="footer-text">FatecRL · © 2026</span>
+    <ul class="footer-links">
+        <li><a href="/landing">Início</a></li>
+        <li><a href="/alunos">Alunos</a></li>
+        <li><a href="/aluno">Cadastro</a></li>
+        <li><a href="/contato">Contato</a></li>
+    </ul>
+</footer>
+
+<script>
+    const targets = document.querySelectorAll('.info-block, .form-top, .field-group, .field-check, .form-footer');
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), 0); io.unobserve(e.target); } });
+    }, { threshold: 0.05 });
+    document.querySelectorAll('.field-group').forEach((el, i) => { el.style.transitionDelay = (i * 0.07) + 's'; });
+    targets.forEach(el => io.observe(el));
+
+    function handleSubmit() {
+        const nome = document.getElementById('nome').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const assunto = document.getElementById('assunto').value;
+        const mensagem = document.getElementById('mensagem').value.trim();
+        const aceite = document.getElementById('aceite').checked;
+        if (!nome || !email || !assunto || !mensagem || !aceite) {
+            alert('Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
+        document.getElementById('formArea').style.display = 'none';
+        document.getElementById('successMsg').classList.add('show');
+    }
+</script>
+</body>
+</html>
