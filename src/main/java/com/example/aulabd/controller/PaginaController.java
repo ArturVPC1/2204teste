@@ -19,34 +19,21 @@ public class PaginaController {
     @Autowired
     private AlunoService alunoService;
 
-    // ── Páginas institucionais ──────────────────────────
-
     @GetMapping("/")
-    public String index() {
-        return "redirect:/alunos";
-    }
+    public String index() { return "redirect:/alunos"; }
 
     @GetMapping("/landing")
-    public String landing() {
-        return "landing";
-    }
+    public String landing() { return "landing"; }
 
     @GetMapping("/contato")
-    public String contato() {
-        return "contato";
-    }
-
-    // ── Página principal: lista todos os alunos ─────────
+    public String contato() { return "contato"; }
 
     @GetMapping("/alunos")
     public String paginaPrincipal(Model model) {
-        List<Aluno> alunos = alunoService.listarTodos();
-        model.addAttribute("alunos", alunos);
+        model.addAttribute("alunos", alunoService.listarTodos());
         model.addAttribute("total", alunoService.contarAlunos());
         return "index";
     }
-
-    // ── Busca de alunos ─────────────────────────────────
 
     @GetMapping("/buscar")
     public String buscar(
@@ -61,16 +48,13 @@ public class PaginaController {
 
         if (nome != null && !nome.isBlank()) {
             resultados = alunoService.buscarPorNome(nome);
-            tipoBusca = "nome";
-            termoBusca = nome;
+            tipoBusca = "nome"; termoBusca = nome;
         } else if (cpf != null && !cpf.isBlank()) {
             resultados = alunoService.buscarPorCpf(cpf);
-            tipoBusca = "cpf";
-            termoBusca = cpf;
+            tipoBusca = "cpf"; termoBusca = cpf;
         } else if (id != null && !id.isBlank()) {
             resultados = alunoService.buscarPorId(id);
-            tipoBusca = "id";
-            termoBusca = id;
+            tipoBusca = "id"; termoBusca = id;
         } else {
             resultados = alunoService.listarTodos();
             tipoBusca = "todos";
@@ -82,8 +66,6 @@ public class PaginaController {
         model.addAttribute("total", alunoService.contarAlunos());
         return "buscar";
     }
-
-    // ── Cadastro de aluno ───────────────────────────────
 
     @GetMapping("/aluno")
     public String formAluno(Model model) {
@@ -97,4 +79,9 @@ public class PaginaController {
         return "sucesso";
     }
 
+    @PostMapping("/aluno/excluir")
+    public String excluirAluno(@RequestParam String id) {
+        alunoService.excluirAluno(id);
+        return "redirect:/alunos";
+    }
 }
