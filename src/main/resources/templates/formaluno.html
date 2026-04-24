@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGA — Cadastrar Aluno · FatecRL</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root { --ink: #0e0e0e; --paper: #f5f0e8; --cream: #ede8dc; --gold: #b8860b; --muted: #6b6456; --line: rgba(14,14,14,0.12); --red: #8b1a1a; }
-        body { font-family: 'Cormorant Garamond', Georgia, serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
 
         nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 3rem; border-bottom: 1px solid var(--line); background: rgba(245,240,232,0.95); backdrop-filter: blur(8px); }
-        .nav-logo { font-family: 'DM Mono', monospace; font-size: 0.85rem; letter-spacing: 0.25em; text-decoration: none; color: var(--ink); }
+        .nav-logo { font-family: 'Inter', system-ui, sans-serif; font-size: 0.85rem; letter-spacing: 0.25em; text-decoration: none; color: var(--ink); }
         .nav-links { display: flex; gap: 2rem; list-style: none; }
-        .nav-links a { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .nav-links a { font-family: 'Inter', system-ui, sans-serif; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
         .nav-links a:hover { color: var(--ink); }
-        .nav-back { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+        .nav-back { font-family: 'Inter', system-ui, sans-serif; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
         .nav-back:hover { color: var(--ink); }
 
         .page-layout { display: grid; grid-template-columns: 1fr 1.2fr; min-height: calc(100vh - 57px); }
 
         /* LEFT — info */
         .form-info { padding: 4rem; background: var(--cream); border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; gap: 3rem; animation: fadeUp 0.6s ease both; }
-        .info-tag { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+        .info-tag { font-family: 'Inter', system-ui, sans-serif; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
         .info-title { font-size: clamp(2rem, 3.5vw, 3.2rem); font-weight: 300; line-height: 1.1; margin-top: 0.6rem; }
         .info-title em { font-style: italic; color: var(--gold); }
         .info-desc { font-size: 1rem; font-weight: 300; line-height: 1.8; color: var(--muted); }
         .info-steps { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
         .info-step { display: flex; align-items: flex-start; gap: 1rem; }
-        .step-dot { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: 'DM Mono', monospace; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+        .step-dot { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: var(--paper); font-family: 'Inter', system-ui, sans-serif; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
         .step-text { font-size: 0.95rem; font-weight: 300; line-height: 1.6; color: var(--muted); }
         .step-text strong { color: var(--ink); font-weight: 400; }
 
@@ -36,22 +36,22 @@
         .form-area { padding: 4rem; display: flex; flex-direction: column; justify-content: center; animation: fadeUp 0.6s ease 0.1s both; }
         .form-heading { font-size: 1.6rem; font-weight: 300; margin-bottom: 0.4rem; }
         .form-heading em { font-style: italic; color: var(--gold); }
-        .form-subtext { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 2.5rem; }
+        .form-subtext { font-family: 'Inter', system-ui, sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 2.5rem; }
 
         .field-group { border: 1px solid var(--line); margin-bottom: -1px; padding: 1.4rem 1.8rem; transition: background 0.2s; position: relative; }
         .field-group:focus-within { background: var(--cream); z-index: 1; border-color: var(--ink); }
         .field-group.error { border-color: var(--red); }
-        .field-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.4rem; transition: color 0.2s; }
+        .field-label { font-family: 'Inter', system-ui, sans-serif; font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.4rem; transition: color 0.2s; }
         .field-group:focus-within .field-label { color: var(--gold); }
-        .field-input { width: 100%; background: transparent; border: none; outline: none; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.2rem; font-weight: 300; color: var(--ink); }
+        .field-input { width: 100%; background: transparent; border: none; outline: none; font-family: 'Inter', system-ui, sans-serif; font-size: 1.2rem; font-weight: 300; color: var(--ink); }
         .field-input::placeholder { color: rgba(107,100,86,0.35); }
-        .field-error { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--red); display: none; margin-top: 0.3rem; }
+        .field-error { font-family: 'Inter', system-ui, sans-serif; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--red); display: none; margin-top: 0.3rem; }
         .field-group.error .field-error { display: block; }
 
         .form-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 1.8rem; }
-        .btn-submit { font-family: 'DM Mono', monospace; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 1rem 2.5rem; cursor: pointer; transition: background 0.25s, transform 0.2s; }
+        .btn-submit { font-family: 'Inter', system-ui, sans-serif; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 1rem 2.5rem; cursor: pointer; transition: background 0.25s, transform 0.2s; }
         .btn-submit:hover { background: var(--gold); transform: translateY(-2px); }
-        .btn-cancel { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .btn-cancel { font-family: 'Inter', system-ui, sans-serif; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
         .btn-cancel:hover { color: var(--ink); }
 
         @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }

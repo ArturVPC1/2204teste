@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGA — Aluno Cadastrado · FatecRL</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root { --ink: #0e0e0e; --paper: #f5f0e8; --cream: #ede8dc; --gold: #b8860b; --muted: #6b6456; --line: rgba(14,14,14,0.12); }
-        body { font-family: 'Cormorant Garamond', Georgia, serif; background: var(--paper); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .card { border: 1px solid var(--line); padding: 4rem; max-width: 480px; width: 90%; text-align: center; animation: fadeUp 0.7s ease both; background: var(--cream); }
         .icon { font-size: 2.5rem; display: block; margin-bottom: 1.5rem; }
-        .title { font-size: 2.5rem; font-weight: 300; margin-bottom: 0.5rem; }
+        .title { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 400; margin-bottom: 0.5rem; }
         .title em { font-style: italic; color: var(--gold); }
-        .subtitle { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; display: block; }
+        .subtitle { font-family: 'Inter', system-ui, sans-serif; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; display: block; }
         .desc { font-size: 1rem; font-weight: 300; line-height: 1.8; color: var(--muted); margin-bottom: 2.5rem; }
         .actions { display: flex; flex-direction: column; gap: 0.8rem; }
-        .btn-primary { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 0.9rem 2rem; text-decoration: none; transition: background 0.2s; }
+        .btn-primary { font-family: 'Inter', system-ui, sans-serif; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 0.9rem 2rem; text-decoration: none; transition: background 0.2s; }
         .btn-primary:hover { background: var(--gold); }
-        .btn-secondary { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .btn-secondary { font-family: 'Inter', system-ui, sans-serif; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
         .btn-secondary:hover { color: var(--ink); }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
