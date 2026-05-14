@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGA — Editar Aluno · FatecRL</title>
+    <title>SIGA — Alunos · FatecRL</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,54 +13,63 @@
         .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 600; text-decoration: none; color: var(--ink); }
         .nav-links { display: flex; gap: 2rem; list-style: none; }
         .nav-links a { font-size: 0.78rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--ink); }
-        .nav-back { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-        .nav-back:hover { color: var(--ink); }
+        .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+        .nav-cta { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 0.55rem 1.3rem; text-decoration: none; border-radius: 2px; transition: background 0.2s; }
+        .nav-cta:hover { background: var(--gold); }
+        .page-header { padding: 3rem 3rem 2rem; border-bottom: 1px solid var(--line); display: flex; align-items: flex-end; justify-content: space-between; animation: fadeUp 0.6s ease both; }
+        .page-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.6rem; }
+        .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 400; line-height: 1.1; }
+        .page-title em { font-style: italic; color: var(--gold); }
+        .stats-bar { display: flex; border-bottom: 1px solid var(--line); animation: fadeUp 0.6s ease 0.1s both; }
+        .stat-item { flex: 1; padding: 1.4rem 3rem; border-right: 1px solid var(--line); }
+        .stat-item:last-child { border-right: none; }
+        .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 400; line-height: 1; }
+        .stat-num em { font-style: italic; color: var(--gold); }
+        .stat-label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+        .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 3rem; border-bottom: 1px solid var(--line); background: var(--cream); animation: fadeUp 0.6s ease 0.15s both; }
+        .toolbar-left { display: flex; align-items: center; gap: 0.8rem; }
+        .toolbar-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+        .search-mini { font-size: 0.82rem; font-family: inherit; background: var(--paper); border: 1px solid var(--line); padding: 0.45rem 0.8rem; color: var(--ink); outline: none; border-radius: 2px; width: 200px; transition: border-color 0.2s; }
+        .search-mini:focus { border-color: var(--ink); }
+        .btn-buscar { font-size: 0.68rem; font-weight: 600; font-family: inherit; letter-spacing: 0.08em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 0.47rem 1rem; cursor: pointer; text-decoration: none; border-radius: 2px; transition: background 0.2s; display: inline-block; }
+        .btn-buscar:hover { background: var(--gold); }
+        .btn-new { font-size: 0.68rem; font-weight: 600; font-family: inherit; letter-spacing: 0.08em; text-transform: uppercase; background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 0.47rem 1rem; text-decoration: none; border-radius: 2px; transition: border-color 0.2s; }
+        .btn-new:hover { border-color: var(--ink); }
+        .table-wrap { padding: 0 3rem 3rem; animation: fadeUp 0.6s ease 0.2s both; }
+        table { width: 100%; border-collapse: collapse; }
+        thead tr { border-bottom: 2px solid var(--ink); }
+        thead th { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 1rem 1rem 0.8rem; }
+        tbody tr { border-bottom: 1px solid var(--line); transition: background 0.15s; }
+        tbody tr:hover { background: var(--cream); }
+        tbody td { padding: 0.9rem 1rem; font-size: 0.97rem; font-weight: 300; vertical-align: middle; }
+        td.td-id { font-size: 0.68rem; color: var(--muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; }
+        td.td-nome { font-weight: 500; }
+        td.td-cpf { font-size: 0.85rem; font-family: monospace; }
+        td.td-num { font-size: 0.65rem; color: var(--muted); width: 40px; }
+        td.td-acao { width: 48px; text-align: center; position: relative; }
 
-        .page-layout { display: grid; grid-template-columns: 1fr 1.2fr; min-height: calc(100vh - 57px); }
+        /* MENU HAMBURGUER */
+        .menu-btn { background: transparent; border: 1px solid var(--line); border-radius: 4px; width: 32px; height: 32px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: border-color 0.2s, background 0.2s; padding: 0; }
+        .menu-btn:hover { border-color: var(--ink); background: var(--cream); }
+        .menu-btn span { display: block; width: 14px; height: 1.5px; background: var(--ink); border-radius: 2px; }
 
-        /* LEFT */
-        .form-info { padding: 4rem; background: var(--cream); border-right: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; gap: 2.5rem; animation: fadeUp 0.6s ease both; }
-        .info-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
-        .info-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 400; line-height: 1.1; margin-top: 0.5rem; }
-        .info-title em { font-style: italic; color: var(--gold); }
-        .info-desc { font-size: 0.95rem; font-weight: 300; line-height: 1.8; color: var(--muted); }
+        /* DROPDOWN */
+        .dropdown { position: absolute; right: 8px; top: calc(100% - 4px); background: white; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 200; min-width: 165px; overflow: hidden; display: none; flex-direction: column; animation: dropIn 0.15s ease both; }
+        .dropdown.open { display: flex; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        .dropdown-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem; font-size: 0.82rem; font-weight: 500; color: var(--ink); text-decoration: none; cursor: pointer; background: transparent; border: none; width: 100%; text-align: left; transition: background 0.15s; font-family: inherit; }
+        .dropdown-item:hover { background: var(--cream); }
+        .dropdown-item.danger { color: var(--red); }
+        .dropdown-item.danger:hover { background: rgba(139,26,26,0.06); }
+        .dropdown-divider { height: 1px; background: var(--line); }
+        .dropdown-icon { font-size: 0.9rem; width: 18px; text-align: center; }
 
-        /* ID BADGE */
-        .id-badge { background: var(--ink); color: var(--paper); padding: 1rem 1.2rem; border-radius: 4px; }
-        .id-badge-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(247,247,245,0.5); display: block; margin-bottom: 0.4rem; }
-        .id-badge-val { font-size: 0.75rem; font-family: monospace; word-break: break-all; line-height: 1.5; }
-
-        .info-steps { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
-        .info-step { display: flex; align-items: flex-start; gap: 0.8rem; }
-        .step-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--paper); font-size: 0.6rem; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-        .step-text { font-size: 0.9rem; font-weight: 300; line-height: 1.6; color: var(--muted); }
-        .step-text strong { color: var(--ink); font-weight: 500; }
-
-        /* RIGHT */
-        .form-area { padding: 4rem; display: flex; flex-direction: column; justify-content: center; animation: fadeUp 0.6s ease 0.1s both; }
-        .form-heading { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 0.3rem; }
-        .form-heading em { font-style: italic; color: var(--gold); }
-        .form-subtext { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem; }
-
-        .field-group { border: 1px solid var(--line); margin-bottom: -1px; padding: 1.3rem 1.6rem; transition: background 0.2s; position: relative; }
-        .field-group:focus-within { background: var(--cream); z-index: 1; border-color: var(--ink); }
-        .field-group.error { border-color: var(--red); }
-        .field-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 0.4rem; transition: color 0.2s; }
-        .field-group:focus-within .field-label { color: var(--gold); }
-        .field-input { width: 100%; background: transparent; border: none; outline: none; font-family: 'Inter', system-ui, sans-serif; font-size: 1.05rem; font-weight: 400; color: var(--ink); }
-        .field-input::placeholder { color: rgba(107,107,123,0.4); }
-        .field-error { font-size: 0.62rem; font-weight: 500; color: var(--red); display: none; margin-top: 0.3rem; }
-        .field-group.error .field-error { display: block; }
-
-        .form-actions { display: flex; align-items: center; gap: 1rem; margin-top: 1.8rem; flex-wrap: wrap; }
-        .btn-submit { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 0.95rem 2.2rem; cursor: pointer; border-radius: 2px; transition: background 0.2s, transform 0.2s; font-family: inherit; }
-        .btn-submit:hover { background: var(--gold); transform: translateY(-2px); }
-        .btn-cancel { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-decoration: none; border: 1px solid var(--line); padding: 0.95rem 1.4rem; border-radius: 2px; transition: border-color 0.2s, color 0.2s; }
-        .btn-cancel:hover { border-color: var(--ink); color: var(--ink); }
-
+        .empty-state { text-align: center; padding: 5rem 2rem; color: var(--muted); }
+        .empty-state .empty-icon { font-size: 2.5rem; display: block; margin-bottom: 1rem; opacity: 0.4; }
+        .empty-state p { font-size: 1rem; font-weight: 300; }
+        .empty-state a { color: var(--ink); font-weight: 500; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 768px) { nav { padding: 1rem 1.5rem; } .nav-links { display: none; } .page-layout { grid-template-columns: 1fr; } .form-info { padding: 2.5rem 1.5rem; } .form-area { padding: 2.5rem 1.5rem; } }
+        @media (max-width: 768px) { nav { padding: 1rem 1.5rem; } .nav-links { display: none; } .page-header, .toolbar { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1rem; } .stats-bar { flex-direction: column; } .stat-item { border-right: none; border-bottom: 1px solid var(--line); padding: 1rem 1.5rem; } .table-wrap { padding: 0 1rem 2rem; overflow-x: auto; } }
     </style>
 </head>
 <body>
@@ -69,102 +78,103 @@
     <a href="/landing" class="nav-logo">FatecRL · SIGA</a>
     <ul class="nav-links">
         <li><a href="/landing">Início</a></li>
-        <li><a href="/alunos">Alunos</a></li>
+        <li><a href="/alunos" class="active">Alunos</a></li>
         <li><a href="/buscar">Buscar</a></li>
         <li><a href="/contato">Contato</a></li>
     </ul>
-    <a href="/alunos" class="nav-back">← Voltar</a>
+    <a href="/aluno" class="nav-cta">+ Novo Aluno</a>
 </nav>
 
-<div class="page-layout">
-    <!-- LEFT -->
-    <div class="form-info">
-        <div>
-            <span class="info-tag">Cadastro · UPDATE</span>
-            <h1 class="info-title">Editar <em>aluno</em></h1>
-        </div>
-        <p class="info-desc">Atualize os dados do aluno abaixo. O ID de matrícula é permanente e não pode ser alterado.</p>
-
-        <!-- ID do aluno em destaque -->
-        <div class="id-badge">
-            <span class="id-badge-label">ID de matrícula (UUID)</span>
-            <span class="id-badge-val" th:text="${aluno.id}">uuid-aqui</span>
-        </div>
-
-        <ul class="info-steps">
-            <li class="info-step">
-                <span class="step-dot">1</span>
-                <span class="step-text"><strong>Nome</strong> — mínimo 3 caracteres.</span>
-            </li>
-            <li class="info-step">
-                <span class="step-dot">2</span>
-                <span class="step-text"><strong>CPF</strong> — exatamente 11 dígitos numéricos.</span>
-            </li>
-            <li class="info-step">
-                <span class="step-dot">3</span>
-                <span class="step-text">Clique em <strong>Salvar alterações</strong> para confirmar.</span>
-            </li>
-        </ul>
+<header class="page-header">
+    <div>
+        <span class="page-tag">FatecRL · Todos os registros</span>
+        <h1 class="page-title">Alunos <em>matriculados</em></h1>
     </div>
+</header>
 
-    <!-- RIGHT -->
-    <div class="form-area">
-        <h2 class="form-heading">Alterar <em>dados</em></h2>
-        <span class="form-subtext">* Todos os campos são obrigatórios</span>
-
-        <form th:action="@{/aluno/atualizar}" method="post" id="editForm" novalidate>
-            <!-- ID oculto para o backend saber qual aluno atualizar -->
-            <input type="hidden" name="id" th:value="${aluno.id}">
-
-            <div class="field-group" id="grp-nome">
-                <label class="field-label" for="nome">Nome completo *</label>
-                <input class="field-input" id="nome" type="text" name="nome"
-                       th:value="${aluno.nome}" placeholder="Nome completo do aluno" autocomplete="off">
-                <span class="field-error">Por favor, informe o nome completo (mínimo 3 caracteres).</span>
-            </div>
-
-            <div class="field-group" id="grp-cpf">
-                <label class="field-label" for="cpf">CPF *</label>
-                <input class="field-input" id="cpf" type="text" name="cpf"
-                       th:value="${aluno.cpf}" placeholder="Somente números (11 dígitos)" maxlength="11" autocomplete="off">
-                <span class="field-error">CPF deve ter exatamente 11 dígitos numéricos.</span>
-            </div>
-
-            <div class="form-actions">
-                <button class="btn-submit" type="submit">Salvar alterações</button>
-                <a href="/alunos" class="btn-cancel">Cancelar</a>
-            </div>
-        </form>
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-num" th:text="${total}">0</div>
+        <div class="stat-label">Total de alunos</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num"><em>A→Z</em></div>
+        <div class="stat-label">Ordenado por nome</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num">UUID</div>
+        <div class="stat-label">Chave primária</div>
     </div>
 </div>
 
+<div class="toolbar">
+    <div class="toolbar-left">
+        <span class="toolbar-label">Busca rápida:</span>
+        <form action="/buscar" method="get" style="display:flex;gap:0.5rem;align-items:center">
+            <input class="search-mini" type="text" name="nome" placeholder="Digite um nome…">
+            <button class="btn-buscar" type="submit">Buscar</button>
+        </form>
+        <a href="/buscar" class="btn-buscar" style="margin-left:0.3rem">Busca avançada</a>
+    </div>
+    <a href="/aluno" class="btn-new">+ Cadastrar novo aluno</a>
+</div>
+
+<div class="table-wrap">
+    <div th:if="${alunos == null or #lists.isEmpty(alunos)}" class="empty-state">
+        <span class="empty-icon">📋</span>
+        <p>Nenhum aluno cadastrado ainda.<br><a href="/aluno">Clique aqui para realizar o primeiro cadastro.</a></p>
+    </div>
+
+    <table th:if="${alunos != null and not #lists.isEmpty(alunos)}">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>ID (UUID)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="aluno, status : ${alunos}">
+                <td class="td-num"  th:text="${status.count}">1</td>
+                <td class="td-nome" th:text="${aluno.nome}">Nome</td>
+                <td class="td-cpf"  th:text="${aluno.cpf}">CPF</td>
+                <td class="td-id"   th:text="${aluno.id}" th:title="${aluno.id}">UUID</td>
+                <td class="td-acao">
+                    <button class="menu-btn" onclick="toggleMenu(this)" type="button" aria-label="Ações">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div class="dropdown">
+                        <a class="dropdown-item" th:href="@{/aluno/editar(id=${aluno.id})}">
+                            <span class="dropdown-icon">✏️</span> Editar aluno
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <form th:action="@{/aluno/excluir}" method="post"
+                              onsubmit="return confirm('Tem certeza que deseja excluir este aluno?')">
+                            <input type="hidden" name="id" th:value="${aluno.id}">
+                            <button class="dropdown-item danger" type="submit">
+                                <span class="dropdown-icon">🗑️</span> Excluir aluno
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
 <script>
-    document.getElementById('editForm').addEventListener('submit', function(e) {
-        let valid = true;
-        const nome = document.getElementById('nome').value.trim();
-        const cpf  = document.getElementById('cpf').value.trim();
-
-        if (nome.length < 3) {
-            document.getElementById('grp-nome').classList.add('error');
-            valid = false;
-        } else {
-            document.getElementById('grp-nome').classList.remove('error');
+    function toggleMenu(btn) {
+        const dropdown = btn.nextElementSibling;
+        const isOpen = dropdown.classList.contains('open');
+        document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
+        if (!isOpen) dropdown.classList.add('open');
+    }
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.td-acao')) {
+            document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
         }
-
-        if (!/^\d{11}$/.test(cpf)) {
-            document.getElementById('grp-cpf').classList.add('error');
-            valid = false;
-        } else {
-            document.getElementById('grp-cpf').classList.remove('error');
-        }
-
-        if (!valid) e.preventDefault();
-    });
-
-    document.getElementById('nome').addEventListener('input', () => document.getElementById('grp-nome').classList.remove('error'));
-    document.getElementById('cpf').addEventListener('input', function() {
-        this.value = this.value.replace(/\D/g, '').slice(0, 11);
-        document.getElementById('grp-cpf').classList.remove('error');
     });
 </script>
 </body>
