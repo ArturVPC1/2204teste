@@ -15,7 +15,7 @@ public class PaginaController {
     private AlunoService alunoService;
 
     @GetMapping("/")
-    public String index() { return "redirect:/alunos"; }
+    public String index() { return "redirect:/landing"; }
 
     @GetMapping("/landing")
     public String landing() { return "landing"; }
