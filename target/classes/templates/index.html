@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGA — Alunos · FatecRL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root { --ink: #1a1a2e; --paper: #f7f7f5; --cream: #eeecea; --gold: #c8922a; --muted: #6b6b7b; --line: rgba(26,26,46,0.1); --red: #8b1a1a; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+        nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 3rem; border-bottom: 1px solid var(--line); background: rgba(247,247,245,0.95); backdrop-filter: blur(10px); }
+        .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 600; text-decoration: none; color: var(--ink); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { font-size: 0.78rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+        .nav-cta { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 0.55rem 1.3rem; text-decoration: none; border-radius: 2px; transition: background 0.2s; }
+        .nav-cta:hover { background: var(--gold); }
+        .page-header { padding: 3rem 3rem 2rem; border-bottom: 1px solid var(--line); display: flex; align-items: flex-end; justify-content: space-between; animation: fadeUp 0.6s ease both; }
+        .page-tag { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.6rem; }
+        .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 400; line-height: 1.1; }
+        .page-title em { font-style: italic; color: var(--gold); }
+        .stats-bar { display: flex; border-bottom: 1px solid var(--line); animation: fadeUp 0.6s ease 0.1s both; }
+        .stat-item { flex: 1; padding: 1.4rem 3rem; border-right: 1px solid var(--line); }
+        .stat-item:last-child { border-right: none; }
+        .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 400; line-height: 1; }
+        .stat-num em { font-style: italic; color: var(--gold); }
+        .stat-label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+        .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 3rem; border-bottom: 1px solid var(--line); background: var(--cream); animation: fadeUp 0.6s ease 0.15s both; }
+        .toolbar-left { display: flex; align-items: center; gap: 0.8rem; }
+        .toolbar-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+        .search-mini { font-size: 0.82rem; font-family: inherit; background: var(--paper); border: 1px solid var(--line); padding: 0.45rem 0.8rem; color: var(--ink); outline: none; border-radius: 2px; width: 200px; transition: border-color 0.2s; }
+        .search-mini:focus { border-color: var(--ink); }
+        .btn-buscar { font-size: 0.68rem; font-weight: 600; font-family: inherit; letter-spacing: 0.08em; text-transform: uppercase; background: var(--ink); color: var(--paper); border: none; padding: 0.47rem 1rem; cursor: pointer; text-decoration: none; border-radius: 2px; transition: background 0.2s; display: inline-block; }
+        .btn-buscar:hover { background: var(--gold); }
+        .btn-new { font-size: 0.68rem; font-weight: 600; font-family: inherit; letter-spacing: 0.08em; text-transform: uppercase; background: transparent; color: var(--ink); border: 1px solid var(--line); padding: 0.47rem 1rem; text-decoration: none; border-radius: 2px; transition: border-color 0.2s; }
+        .btn-new:hover { border-color: var(--ink); }
+        .table-wrap { padding: 0 3rem 3rem; animation: fadeUp 0.6s ease 0.2s both; }
+        table { width: 100%; border-collapse: collapse; }
+        thead tr { border-bottom: 2px solid var(--ink); }
+        thead th { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 1rem 1rem 0.8rem; }
+        tbody tr { border-bottom: 1px solid var(--line); transition: background 0.15s; }
+        tbody tr:hover { background: var(--cream); }
+        tbody td { padding: 0.9rem 1rem; font-size: 0.97rem; font-weight: 300; vertical-align: middle; }
+        td.td-id { font-size: 0.68rem; color: var(--muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace; }
+        td.td-nome { font-weight: 500; }
+        td.td-cpf { font-size: 0.85rem; font-family: monospace; }
+        td.td-num { font-size: 0.65rem; color: var(--muted); width: 40px; }
+        td.td-acao { width: 48px; text-align: center; position: relative; }
+
+        /* MENU HAMBURGUER */
+        .menu-btn { background: transparent; border: 1px solid var(--line); border-radius: 4px; width: 32px; height: 32px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: border-color 0.2s, background 0.2s; padding: 0; }
+        .menu-btn:hover { border-color: var(--ink); background: var(--cream); }
+        .menu-btn span { display: block; width: 14px; height: 1.5px; background: var(--ink); border-radius: 2px; }
+
+        /* DROPDOWN */
+        .dropdown { position: absolute; right: 8px; top: calc(100% - 4px); background: white; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 200; min-width: 165px; overflow: hidden; display: none; flex-direction: column; animation: dropIn 0.15s ease both; }
+        .dropdown.open { display: flex; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        .dropdown-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 1rem; font-size: 0.82rem; font-weight: 500; color: var(--ink); text-decoration: none; cursor: pointer; background: transparent; border: none; width: 100%; text-align: left; transition: background 0.15s; font-family: inherit; }
+        .dropdown-item:hover { background: var(--cream); }
+        .dropdown-item.danger { color: var(--red); }
+        .dropdown-item.danger:hover { background: rgba(139,26,26,0.06); }
+        .dropdown-divider { height: 1px; background: var(--line); }
+        .dropdown-icon { font-size: 0.9rem; width: 18px; text-align: center; }
+
+        .empty-state { text-align: center; padding: 5rem 2rem; color: var(--muted); }
+        .empty-state .empty-icon { font-size: 2.5rem; display: block; margin-bottom: 1rem; opacity: 0.4; }
+        .empty-state p { font-size: 1rem; font-weight: 300; }
+        .empty-state a { color: var(--ink); font-weight: 500; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { nav { padding: 1rem 1.5rem; } .nav-links { display: none; } .page-header, .toolbar { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1rem; } .stats-bar { flex-direction: column; } .stat-item { border-right: none; border-bottom: 1px solid var(--line); padding: 1rem 1.5rem; } .table-wrap { padding: 0 1rem 2rem; overflow-x: auto; } }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/landing" class="nav-logo">FatecRL · SIGA</a>
+    <ul class="nav-links">
+        <li><a href="/landing">Início</a></li>
+        <li><a href="/alunos" class="active">Alunos</a></li>
+        <li><a href="/buscar">Buscar</a></li>
+        <li><a href="/contato">Contato</a></li>
+    </ul>
+    <a href="/aluno" class="nav-cta">+ Novo Aluno</a>
+</nav>
+
+<header class="page-header">
+    <div>
+        <span class="page-tag">FatecRL · Todos os registros</span>
+        <h1 class="page-title">Alunos <em>matriculados</em></h1>
+    </div>
+</header>
+
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-num" th:text="${total}">0</div>
+        <div class="stat-label">Total de alunos</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num"><em>A→Z</em></div>
+        <div class="stat-label">Ordenado por nome</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num">UUID</div>
+        <div class="stat-label">Chave primária</div>
+    </div>
+</div>
+
+<div class="toolbar">
+    <div class="toolbar-left">
+        <span class="toolbar-label">Busca rápida:</span>
+        <form action="/buscar" method="get" style="display:flex;gap:0.5rem;align-items:center">
+            <input class="search-mini" type="text" name="nome" placeholder="Digite um nome…">
+            <button class="btn-buscar" type="submit">Buscar</button>
+        </form>
+        <a href="/buscar" class="btn-buscar" style="margin-left:0.3rem">Busca avançada</a>
+    </div>
+    <a href="/aluno" class="btn-new">+ Cadastrar novo aluno</a>
+</div>
+
+<div class="table-wrap">
+    <div th:if="${alunos == null or #lists.isEmpty(alunos)}" class="empty-state">
+        <span class="empty-icon">📋</span>
+        <p>Nenhum aluno cadastrado ainda.<br><a href="/aluno">Clique aqui para realizar o primeiro cadastro.</a></p>
+    </div>
+
+    <table th:if="${alunos != null and not #lists.isEmpty(alunos)}">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>ID (UUID)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="aluno, status : ${alunos}">
+                <td class="td-num"  th:text="${status.count}">1</td>
+                <td class="td-nome" th:text="${aluno.nome}">Nome</td>
+                <td class="td-cpf"  th:text="${aluno.cpf}">CPF</td>
+                <td class="td-id"   th:text="${aluno.id}" th:title="${aluno.id}">UUID</td>
+                <td class="td-acao">
+                    <button class="menu-btn" onclick="toggleMenu(this)" type="button" aria-label="Ações">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div class="dropdown">
+                        <a class="dropdown-item" th:href="@{/aluno/editar(id=${aluno.id})}">
+                            <span class="dropdown-icon">✏️</span> Editar aluno
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <form th:action="@{/aluno/excluir}" method="post"
+                              onsubmit="return confirm('Tem certeza que deseja excluir este aluno?')">
+                            <input type="hidden" name="id" th:value="${aluno.id}">
+                            <button class="dropdown-item danger" type="submit">
+                                <span class="dropdown-icon">🗑️</span> Excluir aluno
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function toggleMenu(btn) {
+        const dropdown = btn.nextElementSibling;
+        const isOpen = dropdown.classList.contains('open');
+        document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
+        if (!isOpen) dropdown.classList.add('open');
+    }
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.td-acao')) {
+            document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
+        }
+    });
+</script>
+</body>
+</html>
